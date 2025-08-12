@@ -110,10 +110,11 @@ venv.bak/
 .RData
 .Ruserdata
 
-# Large data directories
+# Large data and tool directories
 data/
 raw_data/
 processed_data/
+tools/
 
 # Backup files
 *.bak
