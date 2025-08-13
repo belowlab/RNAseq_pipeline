@@ -132,21 +132,16 @@ if not os.path.exists(args.output_dir):
 # WZ's notes: skip steps if output file exists (in case sorting failed but alignment worked)
 # Check if need to (samtools) sort bam files
 # - this step is after STAR alignment, but will remove outputs of STAR step, so need to check it first
-out_bam_fn = os.path.join(args.output_dir, args.prefix+'.Aligned.out.bam') # Will be removed if alignment finishes successfully
+out_bam_fn = os.path.join(args.output_dir, args.prefix+'.Aligned.out.bam')
 sorted_bam_fn = os.path.join(args.output_dir, args.prefix+'.Aligned.sortedByCoord.out.bam')
+if os.path.isfile(sorted_bam_fn) and not os.path.isfile(out_bam_fn):
+    print(f"[{datetime.now().strftime("%b %d %H:%M:%S")}] Wanying's edits: detected files for samtools sorting. Skip rest of the code")
+    exit()
 
-# Skip STAR if star bam files exist, and sorted bam file not available
+# If star bam files exist: skip STAR
 # Temp folder that should be removed after alignment run
 out_genome_folder = os.path.join(args.output_dir, args.prefix+'._STARgenome')
-
-'''
-print('#', out_bam_fn, os.path.isfile(out_bam_fn))
-print('#', out_genome_folder, os.path.isdir(out_genome_folder))
-print('#', sorted_bam_fn, os.path.isfile(sorted_bam_fn))
-exit()
-'''
-
-if (os.path.isfile(out_bam_fn) and not os.path.isdir(out_genome_folder)) or os.path.isfile(sorted_bam_fn):
+if os.path.isfile(out_bam_fn) and not os.path.isdir(out_genome_folder):
     print(f"[{datetime.now().strftime("%b %d %H:%M:%S")}] Wanying's edits: detected files for STAR alignment. Skip alignment and proceed to samtools sorting")
 else:
     subprocess.check_call(cmd, shell=True, executable='/bin/bash')
@@ -162,39 +157,27 @@ with cd(args.output_dir):
         shutil.rmtree(f'{args.prefix}._STARgenome')
     if os.path.exists(f'{args.prefix}._STARtmp'):
         shutil.rmtree(f'{args.prefix}._STARtmp')
-
-    # WZ's edits: check if need to sort
-    if os.path.isfile(sorted_bam_fn):
-        print(f"[{datetime.now().strftime("%b %d %H:%M:%S")}] Wanying's edits: detected files for samtools sorting. Skip sorting")
-    else:
-        # sort BAM (use samtools to get around the memory gluttony of STAR)
-        print(f'[{datetime.now().strftime("%b %d %H:%M:%S")}] Sorting BAM', flush=True)
-        # cmd = f'samtools sort --threads {args.threads} -o {args.prefix}.Aligned.sortedByCoord.out.bam {args.prefix}.Aligned.out.bam'
-        cmd = f'samtools sort --threads {args.threads} -o {args.prefix}.Aligned.sortedByCoord.out.bam {args.prefix}.Aligned.out.bam'
-        subprocess.check_call(cmd, shell=True, executable='/bin/bash')
-        os.remove(f'{args.prefix}.Aligned.out.bam')
-        print(f'[{datetime.now().strftime("%b %d %H:%M:%S")}] Finished sorting BAM', flush=True)
+    
+    # sort BAM (use samtools to get around the memory gluttony of STAR)
+    print(f'[{datetime.now().strftime("%b %d %H:%M:%S")}] Sorting BAM', flush=True)
+    # cmd = f'samtools sort --threads {args.threads} -o {args.prefix}.Aligned.sortedByCoord.out.bam {args.prefix}.Aligned.out.bam'
+    cmd = f'samtools sort --threads {args.threads} -o {args.prefix}.Aligned.sortedByCoord.out.bam {args.prefix}.Aligned.out.bam'
+    subprocess.check_call(cmd, shell=True, executable='/bin/bash')
+    os.remove(f'{args.prefix}.Aligned.out.bam')
+    print(f'[{datetime.now().strftime("%b %d %H:%M:%S")}] Finished sorting BAM', flush=True)
 
     # index BAM
-    # WZ's notes: generate .BAI index file
-    sorted_bam_index_fn = os.path.join(args.output_dir, args.prefix+'.Aligned.sortedByCoord.out.bam.bai')
-    if os.path.isfile(sorted_bam_index_fn):
-        print(f"[{datetime.now().strftime("%b %d %H:%M:%S")}] Wanying's edits: detected index file for sorted bam. Skip indexing")
-    else:
-        print(f'[{datetime.now().strftime("%b %d %H:%M:%S")}] Indexing BAM', flush=True)
-        cmd = f'samtools index {args.prefix}.Aligned.sortedByCoord.out.bam'
-        subprocess.check_call(cmd, shell=True, executable='/bin/bash')
-        print(f'[{datetime.now().strftime("%b %d %H:%M:%S")}] Finished indexing BAM', flush=True)
+    print(f'[{datetime.now().strftime("%b %d %H:%M:%S")}] Indexing BAM', flush=True)
+    cmd = f'samtools index {args.prefix}.Aligned.sortedByCoord.out.bam'
+    subprocess.check_call(cmd, shell=True, executable='/bin/bash')
+    print(f'[{datetime.now().strftime("%b %d %H:%M:%S")}] Finished indexing BAM', flush=True)
 
     # rename and compress outputs
-    # WZ's edits: force gzip with -f if needed
-    if not os.path.isfile(f'{args.prefix}.SJ.out.tab.gz'):
-        subprocess.check_call(f'gzip -f {args.prefix}.SJ.out.tab', shell=True, executable='/bin/bash')
-    
+    # WZ's edits: force gzip with -f
+    subprocess.check_call(f'gzip -f {args.prefix}.SJ.out.tab', shell=True, executable='/bin/bash')
     with cd(f'{args.prefix}._STARpass1'):
-        if not os.path.isfile(f'{args.prefix}.SJ.pass1.out.tab.gz'): # WZ's edits
-            os.rename('SJ.out.tab', f'{args.prefix}.SJ.pass1.out.tab')
-            subprocess.check_call(f'gzip -f {args.prefix}.SJ.pass1.out.tab', shell=True, executable='/bin/bash')
+        os.rename('SJ.out.tab', f'{args.prefix}.SJ.pass1.out.tab')
+        subprocess.check_call(f'gzip -f {args.prefix}.SJ.pass1.out.tab', shell=True, executable='/bin/bash')
 
     if os.path.exists(f'{args.prefix}.ReadsPerGene.out.tab'):
         subprocess.check_call(f'gzip -f {args.prefix}.ReadsPerGene.out.tab', shell=True, executable='/bin/bash')
