@@ -66,7 +66,7 @@ with open(sumr_arry_fn, 'w') as fh_slurm_array:
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --time=24:00:00
-#SBATCH --mem=10G
+#SBATCH --mem=15G
 #SBATCH --array=1-{count}
 #SBATCH --output={project_folder}/code/slurm_logs/picard_%A_%a.out
 

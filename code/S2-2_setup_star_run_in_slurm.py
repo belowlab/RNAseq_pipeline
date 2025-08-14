@@ -77,7 +77,7 @@ with open(cmd_fn,'w') as fh_out:
         cmd += f' {sample_name}'
         cmd += f' --output_dir {output_dir}'
         cmd += f' --STARalt {star_tool}'
-        cmd += f' --threads 8' # Default is 4
+        cmd += f' --threads 4' # Use too many threads might lead to failed run due to memory issue
         fh_out.write(cmd + '\n')
         count += 1
 logging.info('# - %s commands were written to output'%count)
