@@ -114,7 +114,7 @@ venv.bak/
 data/
 raw_data/
 processed_data/
-tools/
+# tools/
 
 # Backup files
 *.bak

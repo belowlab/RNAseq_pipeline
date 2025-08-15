@@ -36,6 +36,7 @@ logging.info('# python ' + ' '.join(sys.argv))
 
 output_dir = f'{project_folder}/picard'
 
+# ##### Create commands #####
 # Loop through the star output folder to create commands
 # Use default for other settings
 star_output_path = os.path.join(project_folder, 'star')

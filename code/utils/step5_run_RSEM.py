@@ -26,11 +26,13 @@ parser.add_argument('--is_stranded', type=str.lower, choices=['true', 'false'], 
 parser.add_argument('--paired_end', type=str.lower, choices=['true', 'false'], default='true', help='Paired-end protocol')
 parser.add_argument('-t', '--threads', default='4', help='Number of threads')
 parser.add_argument('--bowtie_version', choices=['1', '2'], default='2', help='Select Bowtie version')
+parser.add_argument('--rsem_cmd', type=str, default='rsem-calculate-expression',
+                    help="Wanyig's edits. User supplied path to RNA-SeQC") # eg. /data100t1/home/wanying/downloaded_tools/RSEM-1.3.3/rsem-calculate-expression
 args = parser.parse_args()
 
 print('['+datetime.now().strftime("%b %d %H:%M:%S")+'] Running RSEM', flush=True)
 with cd(args.output_dir):
-    cmd = 'rsem-calculate-expression --num-threads '+args.threads+' --fragment-length-max '+args.max_frag_len+' --no-bam-output'
+    cmd = f'{args.rsem_cmd} --num-threads '+args.threads+' --fragment-length-max '+args.max_frag_len+' --no-bam-output'
 
     if args.paired_end=='true':
         cmd += ' --paired-end'

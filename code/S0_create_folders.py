@@ -8,7 +8,6 @@ Create a folder with the desired structure for RNAseq QC pipeline:
     ├── fastp/
     │   └── report/
     ├── star/
-    │   └── star_out/
     ├── picard/
     ├── RNAseqQC/
     ├── RSEM/
@@ -37,7 +36,7 @@ if os.path.isdir(root_folder):
 
 # Create subfolders
 lst_subfolders = [root_folder, f'{root_folder}/code', f'{root_folder}/data',
-                  f'{root_folder}/fastp/report/', f'{root_folder}/star/star_out',
+                  f'{root_folder}/fastp/report/', f'{root_folder}/star',
                   f'{root_folder}/picard', f'{root_folder}/RNAseqQC',
                   f'{root_folder}/RSEM', f'{root_folder}/slurm_submission',
                   f'{root_folder}/slurm_logs']

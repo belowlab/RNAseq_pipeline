@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser(description='Convert BAM to FASTQ using SamToFa
 parser.add_argument('input_bam', type=str, help='BAM file')
 parser.add_argument('prefix', type=str, help='Prefix for output files; usually <sample_id>')
 parser.add_argument('-o', '--output_dir', default=os.getcwd(), help='Output directory')
-parser.add_argument('-m', '--memory', default=3, type=int, help='Memory, in GB')
+parser.add_argument('-m', '--memory', default=5, type=int, help='Memory requested to run picard on java VM, in GB (GTex used 3GB, Wanying changed to 5GB)')
 parser.add_argument('--max_records_in_ram', default=500000, type=int,
                     help='Number of records stored in RAM before spilling to disk')
 parser.add_argument('--sorting_collection_size_ratio', default=0.25, type=float)
