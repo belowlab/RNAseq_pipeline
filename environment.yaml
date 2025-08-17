@@ -1,4 +1,4 @@
-name: RNAseq_gtex_pipeline
+name: RNAseqQC
 channels:
   - conda-forge
   - bioconda
@@ -157,6 +157,7 @@ dependencies:
   - sed=4.9
   - six=1.17.0
   - star=2.7.11b
+  - subread=2.1.1
   - sysroot_linux-64=2.34
   - tk=8.6.13
   - tktable=2.10
