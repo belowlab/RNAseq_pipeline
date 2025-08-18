@@ -1,0 +1,9 @@
+step1:
+/vgipiper02/CCHC_seq/covid19_RNAseq/fastp/run_fastp_5928.sh
+step2:
+/vgipiper02/CCHC_seq/covid19_RNAseq/STAR_hg38/run_STAR_5928.sh
+step3:
+/vgipiper02/CCHC_seq/covid19_RNAseq/featureCounts/featureCount.log
+step4:
+/vgipiper02/CCHC_seq/covid19_RNAseq/DESeq2/deseq2.log
+
