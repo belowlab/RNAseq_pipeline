@@ -12,6 +12,7 @@ Create a folder with the desired structure for RNAseq QC pipeline:
     ├── RNAseqQC/
     ├── RSEM/
     ├── featureCounts/
+    ├── final_output
     └── post_pipeline_QC/
 
 Usage:
@@ -39,8 +40,9 @@ if os.path.isdir(root_folder):
 lst_subfolders = [root_folder, f'{root_folder}/code', f'{root_folder}/data',
                   f'{root_folder}/fastp/report/', f'{root_folder}/star',
                   f'{root_folder}/picard', f'{root_folder}/RNAseqQC',
-                  f'{root_folder}/RSEM', f'{root_folder}/featureCounts',
-                  f'{root_folder}/code/slurm_submission', f'{root_folder}/code/slurm_logs']
+                  f'{root_folder}/final_output', f'{root_folder}/RSEM',
+                  f'{root_folder}/featureCounts', f'{root_folder}/code/slurm_submission',
+                  f'{root_folder}/code/slurm_logs']
 for folder in lst_subfolders:
     try:
         os.makedirs(folder)
