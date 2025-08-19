@@ -62,5 +62,10 @@ with cd(args.output_dir):
     # run featureCounts
     print('  * command: '+cmd, flush=True)
     subprocess.check_call(cmd, shell=True, executable='/bin/bash')
+    
+# gzip the output to save on storage
+print('['+datetime.now().strftime("%b %d %H:%M:%S")+'] gzip ouput', flush=True)
+cmd = f'gzip -f {output_fn}'
+subprocess.check_call(cmd, shell=True, executable='/bin/bash')
 
 print('['+datetime.now().strftime("%b %d %H:%M:%S")+'] Finished featureCounts', flush=True)

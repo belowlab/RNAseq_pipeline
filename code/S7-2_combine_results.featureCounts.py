@@ -20,7 +20,7 @@ import os
 # Path to featureCounts outputs
 input_path = sys.argv[1] # Input path with featureCounts outputs
 output_fn = sys.argv[2] # Output file name
-suffix = '.featureCount.count'
+suffix = '.featureCount.count.gz' # Gzipped output
 
 dfs = []
 count = 0
@@ -31,7 +31,7 @@ for fn in os.listdir(input_path):
     sample = fn.split(suffix)[0]
     
     # Skip comment lines starting with "#"
-    df = pd.read_csv(os.path.join(input_path,fn), sep="\t", comment="#")
+    df = pd.read_csv(os.path.join(input_path,fn), sep="\t", comment="#", compression='gzip')
     
     # Keep only geneid and count column (last column)
     df = df[["Geneid", df.columns[-1]]]
@@ -58,7 +58,7 @@ print(f'\r# Merged {count} files\n')
 # Fill missing values with 0
 merged = merged.fillna(0)
 
-print('# Save to output')
+print('# Save to output:', output_fn)
 # Save final matrix
 merged.to_csv(output_fn, sep="\t", index=False)
 print('# Done')
